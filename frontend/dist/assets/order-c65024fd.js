@@ -1,0 +1,1 @@
+import{r as e}from"./request-b2cad9f1.js";function o(r){return e({url:"/orders",method:"get",params:r})}function n(r){return e({url:"/orders",method:"post",data:r})}function u(r){return e({url:`/orders/${r}/cancel`,method:"put"})}function c(r){return e({url:`/orders/${r}/confirm`,method:"put"})}export{u as a,c as b,n as c,o as g};

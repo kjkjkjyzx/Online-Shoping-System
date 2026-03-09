@@ -1,0 +1,84 @@
+{
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "JWT 签名密钥。"
+    },
+    {
+      "name": "jwt.expiration",
+      "type": "java.lang.Long",
+      "description": "JWT 过期时间，单位毫秒。"
+    },
+    {
+      "name": "jwt.header",
+      "type": "java.lang.String",
+      "description": "JWT 请求头名称。"
+    },
+    {
+      "name": "jwt.prefix",
+      "type": "java.lang.String",
+      "description": "JWT 请求头前缀。"
+    },
+    {
+      "name": "spring.datasource.druid.initial-size",
+      "type": "java.lang.Integer",
+      "description": "Druid 连接池初始化连接数。"
+    },
+    {
+      "name": "spring.datasource.druid.min-idle",
+      "type": "java.lang.Integer",
+      "description": "Druid 连接池最小空闲连接数。"
+    },
+    {
+      "name": "spring.datasource.druid.max-active",
+      "type": "java.lang.Integer",
+      "description": "Druid 连接池最大活跃连接数。"
+    },
+    {
+      "name": "spring.datasource.druid.max-wait",
+      "type": "java.lang.Long",
+      "description": "Druid 获取连接的最大等待时间，单位毫秒。"
+    },
+    {
+      "name": "spring.datasource.druid.time-between-eviction-runs-millis",
+      "type": "java.lang.Long",
+      "description": "Druid 空闲连接回收线程运行间隔，单位毫秒。"
+    },
+    {
+      "name": "spring.datasource.druid.min-evictable-idle-time-millis",
+      "type": "java.lang.Long",
+      "description": "Druid 连接最小空闲时间，单位毫秒。"
+    },
+    {
+      "name": "spring.datasource.druid.validation-query",
+      "type": "java.lang.String",
+      "description": "Druid 连接有效性校验 SQL。"
+    },
+    {
+      "name": "spring.datasource.druid.test-while-idle",
+      "type": "java.lang.Boolean",
+      "description": "Druid 空闲时检测连接是否可用。"
+    },
+    {
+      "name": "spring.datasource.druid.test-on-borrow",
+      "type": "java.lang.Boolean",
+      "description": "Druid 借出连接时是否检测。"
+    },
+    {
+      "name": "spring.datasource.druid.test-on-return",
+      "type": "java.lang.Boolean",
+      "description": "Druid 归还连接时是否检测。"
+    },
+    {
+      "name": "spring.datasource.druid.pool-prepared-statements",
+      "type": "java.lang.Boolean",
+      "description": "Druid 是否缓存 PreparedStatement。"
+    },
+    {
+      "name": "spring.datasource.druid.max-pool-prepared-statement-per-connection-size",
+      "type": "java.lang.Integer",
+      "description": "每个连接缓存的 PreparedStatement 上限。"
+    }
+  ]
+}

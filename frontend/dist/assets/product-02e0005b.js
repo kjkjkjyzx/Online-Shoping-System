@@ -1,0 +1,1 @@
+import{r}from"./request-b2cad9f1.js";function e(t){return r({url:"/products",method:"get",params:t})}function u(t){return r({url:`/products/${t}`,method:"get"})}function s(t){return r({url:"/products/hot",method:"get",params:t})}export{e as a,u as b,s as g};
