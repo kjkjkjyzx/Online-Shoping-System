@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 /**
- * 获取订单列表
+ * 获取订单列表（当前登录用户）
  */
 export function getOrderList(params) {
   return request({

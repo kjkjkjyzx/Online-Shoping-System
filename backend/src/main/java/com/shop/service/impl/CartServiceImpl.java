@@ -1,5 +1,7 @@
 package com.shop.service.impl;
 
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.shop.common.BusinessException;
@@ -12,6 +14,7 @@ import com.shop.vo.CartVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,32 +30,75 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
 
     @Override
     public boolean addToCart(Long userId, Long productId, Integer quantity) {
+        if (userId == null || productId == null) {
+            throw new BusinessException(400, "参数不完整");
+        }
+        if (quantity == null || quantity < 1) {
+            throw new BusinessException(400, "商品数量必须大于 0");
+        }
+
+        Product product = productService.getById(productId);
+        if (product == null) {
+            throw new BusinessException(404, "商品不存在");
+        }
+        if (!Integer.valueOf(1).equals(product.getStatus())) {
+            throw new BusinessException(400, "商品已下架");
+        }
+
+        Integer stock = product.getStock();
+        if (stock != null && stock <= 0) {
+            throw new BusinessException(400, "商品库存不足");
+        }
+
         // 检查购物车是否已有该商品
         Cart cart = this.getOne(new LambdaQueryWrapper<Cart>()
                 .eq(Cart::getUserId, userId)
                 .eq(Cart::getProductId, productId));
 
         if (cart != null) {
+            int newQuantity = cart.getQuantity() + quantity;
+            if (stock != null && newQuantity > stock) {
+                throw new BusinessException(400, "购买数量超过库存");
+            }
+
             // 已有该商品，数量累加
-            cart.setQuantity(cart.getQuantity() + quantity);
+            cart.setQuantity(newQuantity);
             return this.updateById(cart);
-        } else {
-            // 没有该商品，新增记录
-            Cart newCart = new Cart();
-            newCart.setUserId(userId);
-            newCart.setProductId(productId);
-            newCart.setQuantity(quantity);
-            newCart.setSelected(1);
-            return this.save(newCart);
         }
+
+        if (stock != null && quantity > stock) {
+            throw new BusinessException(400, "购买数量超过库存");
+        }
+
+        // 没有该商品，新增记录
+        Cart newCart = new Cart();
+        newCart.setUserId(userId);
+        newCart.setProductId(productId);
+        newCart.setQuantity(quantity);
+        newCart.setSelected(1);
+        return this.save(newCart);
     }
 
     @Override
     public boolean updateQuantity(Long id, Integer quantity) {
+        if (quantity == null || quantity < 1) {
+            throw new BusinessException(400, "商品数量必须大于 0");
+        }
+
         Cart cart = this.getById(id);
         if (cart == null) {
             throw new BusinessException(404, "购物车记录不存在");
         }
+
+        Product product = productService.getById(cart.getProductId());
+        if (product == null) {
+            throw new BusinessException(404, "商品不存在");
+        }
+        Integer stock = product.getStock();
+        if (stock != null && quantity > stock) {
+            throw new BusinessException(400, "购买数量超过库存");
+        }
+
         cart.setQuantity(quantity);
         return this.updateById(cart);
     }
@@ -70,7 +116,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
             Product product = productService.getById(cart.getProductId());
             if (product != null) {
                 vo.setName(product.getName());
-                vo.setImage(product.getImages());
+                vo.setImage(extractFirstImage(product.getImages()));
                 vo.setPrice(product.getPrice());
             }
             return vo;
@@ -82,5 +128,30 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
         LambdaQueryWrapper<Cart> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Cart::getUserId, userId);
         return this.remove(wrapper);
+    }
+
+    private String extractFirstImage(String images) {
+        if (!StringUtils.hasText(images)) {
+            return null;
+        }
+
+        String raw = images.trim();
+        if (raw.startsWith("[")) {
+            try {
+                JSONArray array = JSONUtil.parseArray(raw);
+                if (!array.isEmpty()) {
+                    return array.getStr(0);
+                }
+            } catch (Exception ignored) {
+                // 解析失败回退到原始值
+            }
+        }
+
+        // 支持纯 JSON 字符串值，例如 "https://..."
+        if (raw.startsWith("\"") && raw.endsWith("\"")) {
+            return raw.substring(1, raw.length() - 1);
+        }
+
+        return raw;
     }
 }

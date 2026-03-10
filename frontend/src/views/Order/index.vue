@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="order-page">
     <main class="main-content">
       <div class="page-header">
@@ -32,8 +32,8 @@
           <div class="order-products">
             <div v-if="!order.items || order.items.length === 0" class="no-products">暂无商品信息</div>
             <div class="product-info" v-for="item in order.items" :key="item.id">
-              <img :src="item.image || productPlaceholder" alt="商品" />
-              <span class="product-name">{{ item.name }}</span>
+              <img :src="resolveImage(item.productImage, productPlaceholder)" alt="商品" />
+              <span class="product-name">{{ item.productName }}</span>
               <span class="product-qty">{{ item.quantity }}</span>
             </div>
           </div>
@@ -59,6 +59,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowLeft, CreditCard } from '@element-plus/icons-vue'
 import { getOrderList, cancelOrder as cancelOrderApi, confirmOrder as confirmOrderApi, payOrder as payOrderApi } from '@/api/order'
 import { productPlaceholder } from '@/utils/placeholders'
+import { resolveImage } from '@/utils/image'
 import { useUserStore } from '@/store/user'
 
 const router = useRouter()
@@ -71,7 +72,7 @@ onMounted(() => { loadOrders() })
 const loadOrders = async () => {
   if (!userStore.userId) { orderList.value = []; return }
   try {
-    const params = { userId: userStore.userId }
+    const params = {}
     if (statusFilter.value !== '') params.status = statusFilter.value
     const res = await getOrderList(params)
     orderList.value = (res.data || []).map(order => ({ ...order, items: order.items || [] }))

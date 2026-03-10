@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="product-page">
     <div class="page-back">
       <el-button class="back-btn" @click="router.push('/')"><el-icon><ArrowLeft /></el-icon>返回首页</el-button>
@@ -40,7 +40,7 @@
         <div class="product-list" v-else>
           <div class="product-card" v-for="i in sortedList" :key="i.id" @click="goToDetail(i.id)">
             <div class="card-img-wrap">
-              <img :src="i.images || productPlaceholder" alt="商品" />
+              <img :src="resolveImage(i.images, productPlaceholder)" alt="商品" />
               <div v-if="userStore.role === 1" class="hover-cart" @click.stop="handleAddToCart(i)">
                 <el-icon><ShoppingCart /></el-icon>
                 <span>加入购物车</span>
@@ -77,6 +77,7 @@ import { ArrowLeft, ShoppingCart } from '@element-plus/icons-vue'
 import { getProductList } from '@/api/product'
 import { addToCart } from '@/api/cart'
 import { productPlaceholder } from '@/utils/placeholders'
+import { resolveImage } from '@/utils/image'
 import { useUserStore } from '@/store/user'
 
 const router = useRouter()
@@ -131,7 +132,7 @@ const handleAddToCart = async (product) => {
     return
   }
   try {
-    await addToCart({ userId: userStore.userId, productId: product.id, quantity: 1 })
+    await addToCart({ productId: product.id, quantity: 1 })
     ElMessage.success('已加入购物车')
   } catch {
     ElMessage.error('加入失败，请重试')
@@ -266,3 +267,4 @@ const loadProducts = async () => {
 }
 :deep(.el-pager li.is-active) { background-color: var(--color-primary) !important; color: var(--color-text-inverse) !important; border-radius: var(--radius-sm); }
 </style>
+

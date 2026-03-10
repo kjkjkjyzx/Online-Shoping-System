@@ -8,12 +8,10 @@ import com.shop.service.ProductService;
 import com.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.DigestUtils;
 
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 
 /**
  * 数据初始化 Runner
@@ -30,6 +28,8 @@ public class DataInitializer implements CommandLineRunner {
 
     @Autowired
     private ProductService productService;
+
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public void run(String... args) {
@@ -59,7 +59,7 @@ public class DataInitializer implements CommandLineRunner {
         // 创建管理员账号
         User admin = new User();
         admin.setUsername("admin");
-        admin.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes(StandardCharsets.UTF_8)));
+        admin.setPassword(passwordEncoder.encode("123456"));
         admin.setNickname("管理员");
         admin.setEmail("admin@shop.com");
         admin.setPhone("13800138000");
@@ -70,7 +70,7 @@ public class DataInitializer implements CommandLineRunner {
         // 创建测试用户
         User user1 = new User();
         user1.setUsername("user1");
-        user1.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes(StandardCharsets.UTF_8)));
+        user1.setPassword(passwordEncoder.encode("123456"));
         user1.setNickname("测试用户 1");
         user1.setEmail("user1@shop.com");
         user1.setPhone("13800138001");
@@ -80,7 +80,7 @@ public class DataInitializer implements CommandLineRunner {
 
         User user2 = new User();
         user2.setUsername("user2");
-        user2.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes(StandardCharsets.UTF_8)));
+        user2.setPassword(passwordEncoder.encode("123456"));
         user2.setNickname("测试用户 2");
         user2.setEmail("user2@shop.com");
         user2.setPhone("13800138002");
@@ -91,7 +91,7 @@ public class DataInitializer implements CommandLineRunner {
         // 创建测试商家
         User merchant = new User();
         merchant.setUsername("merchant1");
-        merchant.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes(StandardCharsets.UTF_8)));
+        merchant.setPassword(passwordEncoder.encode("123456"));
         merchant.setNickname("测试商家");
         merchant.setEmail("merchant1@shop.com");
         merchant.setPhone("13800138003");

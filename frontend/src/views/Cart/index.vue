@@ -27,7 +27,7 @@
           <div class="cart-item" v-for="item in cartList" :key="item.id">
             <el-checkbox v-model="item.selected" @change="updateTotal" />
             <div class="col-product">
-              <img :src="item.image || productPlaceholder" alt="商品" />
+              <img :src="resolveImage(item.image, productPlaceholder)" alt="商品" />
               <span class="item-name">{{ item.name }}</span>
             </div>
             <span class="col-price">¥{{ item.price }}</span>
@@ -65,6 +65,7 @@ import { ArrowLeft, Delete } from '@element-plus/icons-vue'
 import { getCartList, updateQuantity as updateCartQuantity, deleteCart } from '@/api/cart'
 import { createOrder } from '@/api/order'
 import { productPlaceholder } from '@/utils/placeholders'
+import { resolveImage } from '@/utils/image'
 import { useUserStore } from '@/store/user'
 
 const router = useRouter()
@@ -92,7 +93,7 @@ const loadCart = async () => {
     return
   }
   try {
-    const res = await getCartList({ userId: userStore.userId })
+    const res = await getCartList()
     cartList.value = res.data?.map(item => ({ ...item, selected: item.selected === 1 || item.selected === true })) || []
     updateTotal()
   } catch (error) {
@@ -146,12 +147,11 @@ const checkout = async () => {
     const items = selectedItems.map(item => ({
       productId: item.productId,
       productName: item.name,
-      productImage: item.image,
+      productImage: resolveImage(item.image, productPlaceholder),
       price: item.price,
       quantity: item.quantity
     }))
     await createOrder({
-      userId: userStore.userId,
       totalAmount: parseFloat(totalPrice.value.toFixed(2)),
       items
     })
@@ -323,3 +323,7 @@ const checkout = async () => {
   color: var(--color-primary);
 }
 </style>
+
+
+
+

@@ -1,0 +1,1 @@
+function e(n,r=""){if(!n)return r;if(Array.isArray(n))return n[0]||r;if(typeof n!="string")return r;const t=n.trim();if(!t)return r;try{if(t.startsWith("[")){const s=JSON.parse(t);return Array.isArray(s)&&s.length>0&&s[0]||r}if(t.startsWith('"')&&t.endsWith('"')){const s=JSON.parse(t);return typeof s=="string"?s:r}}catch{}return t}export{e as r};

@@ -30,4 +30,14 @@ public interface OrderMapper extends BaseMapper<Order> {
             "</script>")
     List<Order> selectMerchantOrders(@Param("merchantId") Long merchantId,
                                      @Param("status") Integer status);
+
+    /**
+     * 判断某订单是否包含指定商家的商品
+     */
+    @Select("SELECT COUNT(1) FROM orders o " +
+            "INNER JOIN order_item oi ON oi.order_id = o.id " +
+            "INNER JOIN product p ON p.id = oi.product_id " +
+            "WHERE o.id = #{orderId} AND p.merchant_id = #{merchantId} AND o.deleted = 0")
+    int countMerchantOrder(@Param("orderId") Long orderId,
+                           @Param("merchantId") Long merchantId);
 }

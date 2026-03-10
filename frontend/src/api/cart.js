@@ -1,13 +1,12 @@
 import request from '@/utils/request'
 
 /**
- * 获取购物车列表
+ * 获取购物车列表（当前登录用户）
  */
-export function getCartList(params) {
+export function getCartList() {
   return request({
     url: '/cart',
-    method: 'get',
-    params
+    method: 'get'
   })
 }
 
@@ -44,12 +43,11 @@ export function deleteCart(id) {
 }
 
 /**
- * 清空购物车
+ * 清空购物车（当前登录用户）
  */
-export function clearCart(params) {
+export function clearCart() {
   return request({
     url: '/cart',
-    method: 'delete',
-    params
+    method: 'delete'
   })
 }

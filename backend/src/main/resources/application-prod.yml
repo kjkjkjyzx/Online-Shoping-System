@@ -1,0 +1,5 @@
+shop:
+  admin-secret: ${ADMIN_SECRET}
+
+jwt:
+  secret: ${JWT_SECRET}

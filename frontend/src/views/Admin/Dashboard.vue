@@ -224,7 +224,7 @@ const loadStats = async () => {
       .toFixed(2)
 
     const userRes = await request.get('/users')
-    stats.value.totalUsers = (userRes.data || []).length
+    stats.value.totalUsers = userRes.data?.total ?? (Array.isArray(userRes.data) ? userRes.data.length : 0)
 
     await nextTick()
     initLineChart(orders)
@@ -314,3 +314,4 @@ onBeforeUnmount(() => {
   width: 100%;
 }
 </style>
+

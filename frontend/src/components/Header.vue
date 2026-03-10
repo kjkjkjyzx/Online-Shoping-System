@@ -95,7 +95,7 @@ const handleLogout = () => {
 const loadCartCount = async () => {
   if (isLogin.value && userStore.role === 1 && userStore.userId) {
     try {
-      const res = await getCartList({ userId: userStore.userId })
+      const res = await getCartList()
       cartCount.value = (res.data || []).filter(i => i.selected === 1 || i.selected === true).length
     } catch {
       cartCount.value = 0
@@ -259,3 +259,4 @@ watch(() => userStore.token, (val) => {
   line-height: 16px;
 }
 </style>
+

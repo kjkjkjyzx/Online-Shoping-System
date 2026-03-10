@@ -1,7 +1,7 @@
 <template>
   <div class="register-page">
     <div class="register-box">
-      <el-button class="back-btn" :icon="ArrowLeft" link @click="router.push('/user/login')">返回</el-button>
+      <el-button class="back-btn" :icon="ArrowLeft" link @click="router.push('/login')">返回</el-button>
       <h2>用户注册</h2>
       <el-form :model="form" :rules="rules" ref="formRef">
         <el-form-item prop="username">
@@ -240,3 +240,4 @@ const handleRegister = async () => {
   opacity: 0.75;
 }
 </style>
+

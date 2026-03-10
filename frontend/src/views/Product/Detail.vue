@@ -8,7 +8,7 @@
       </div>
       <div class="product-info" v-if="product">
         <div class="product-image">
-          <img :src="product.images || productPlaceholder" alt="商品" />
+          <img :src="resolveImage(product.images, productPlaceholder)" alt="商品" />
         </div>
         <div class="product-detail">
           <h1>{{ product.name }}</h1>
@@ -47,6 +47,7 @@ import { ArrowLeft } from '@element-plus/icons-vue'
 import { getProductDetail } from '@/api/product'
 import { addToCart as apiAddToCart } from '@/api/cart'
 import { productPlaceholder } from '@/utils/placeholders'
+import { resolveImage } from '@/utils/image'
 import { useUserStore } from '@/store/user'
 
 const router = useRouter()
@@ -81,7 +82,7 @@ const addToCart = async () => {
     return
   }
   try {
-    await apiAddToCart({ userId: userStore.userId, productId: product.value.id, quantity: quantity.value })
+    await apiAddToCart({ productId: product.value.id, quantity: quantity.value })
     ElMessage.success('已添加到购物车')
   } catch (error) {
     // 错误消息已由请求拦截器统一提示
@@ -95,7 +96,7 @@ const buyNow = async () => {
     return
   }
   try {
-    await apiAddToCart({ userId: userStore.userId, productId: product.value.id, quantity: quantity.value })
+    await apiAddToCart({ productId: product.value.id, quantity: quantity.value })
     router.push('/cart')
   } catch (error) {
     // 错误消息已由请求拦截器统一提示
@@ -197,3 +198,5 @@ const buyNow = async () => {
 }
 .desc-content { color: var(--color-text-secondary); line-height: 1.8; }
 </style>
+
+

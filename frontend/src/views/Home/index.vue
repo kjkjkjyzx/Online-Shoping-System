@@ -161,11 +161,11 @@ const goToCategory = (id) => {
 const handleAddToCart = async (item) => {
   if (!userStore.token) {
     ElMessage.warning('请先登录')
-    router.push('/user/login')
+    router.push('/login')
     return
   }
   try {
-    await addToCart({ userId: userStore.userId, productId: item.id, quantity: 1 })
+    await addToCart({ productId: item.id, quantity: 1 })
     ElMessage.success('已加入购物车')
   } catch {
     ElMessage.error('加入失败，请重试')
@@ -466,3 +466,5 @@ const handleAddToCart = async (item) => {
 /* ========== 页脚 - 已移至 Layout.vue ========== */
 .site-footer { display: none; }
 </style>
+
+

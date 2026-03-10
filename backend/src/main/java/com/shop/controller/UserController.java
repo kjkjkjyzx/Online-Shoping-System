@@ -3,12 +3,14 @@ package com.shop.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.shop.common.BusinessException;
 import com.shop.common.RequireRole;
 import com.shop.common.Result;
 import com.shop.entity.User;
 import com.shop.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,17 +40,46 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @RequireRole({0, 1, 2})
     @Operation(summary = "获取用户信息")
-    public Result<User> getUserInfo(@PathVariable Long id) {
+    public Result<User> getUserInfo(@PathVariable Long id, HttpServletRequest request) {
+        Long currentUserId = getCurrentUserId(request);
+        Integer role = getCurrentRole(request);
+        if (!id.equals(currentUserId) && role != 0) {
+            throw new BusinessException(403, "无权限查看该用户信息");
+        }
+
         User user = userService.getById(id);
+        if (user == null) {
+            throw new BusinessException(404, "用户不存在");
+        }
         return Result.success(user);
     }
 
     @PutMapping("/{id}")
+    @RequireRole({0, 1, 2})
     @Operation(summary = "更新用户信息")
-    public Result<Boolean> updateUser(@PathVariable Long id, @RequestBody User user) {
-        user.setId(id);
-        boolean success = userService.updateById(user);
+    public Result<Boolean> updateUser(@PathVariable Long id, @RequestBody User user, HttpServletRequest request) {
+        Long currentUserId = getCurrentUserId(request);
+        Integer role = getCurrentRole(request);
+        if (!id.equals(currentUserId) && role != 0) {
+            throw new BusinessException(403, "无权限修改该用户信息");
+        }
+
+        if (userService.getById(id) == null) {
+            throw new BusinessException(404, "用户不存在");
+        }
+
+        // 仅允许修改基础资料，防止越权修改角色/状态等敏感字段
+        User update = new User();
+        update.setId(id);
+        update.setNickname(user.getNickname());
+        update.setEmail(user.getEmail());
+        update.setPhone(user.getPhone());
+        update.setAvatar(user.getAvatar());
+        update.setGender(user.getGender());
+
+        boolean success = userService.updateById(update);
         return success ? Result.success("更新成功", true) : Result.error("更新失败");
     }
 
@@ -76,6 +107,13 @@ public class UserController {
     @RequireRole({0}) // 仅管理员
     @Operation(summary = "修改用户角色（管理员）")
     public Result<Boolean> updateUserRole(@PathVariable Long id, @RequestParam Integer role) {
+        if (role == null || (role != 0 && role != 1 && role != 2)) {
+            throw new BusinessException(400, "非法角色值");
+        }
+        if (userService.getById(id) == null) {
+            throw new BusinessException(404, "用户不存在");
+        }
+
         User user = new User();
         user.setId(id);
         user.setRole(role);
@@ -87,11 +125,33 @@ public class UserController {
     @RequireRole({0}) // 仅管理员
     @Operation(summary = "修改用户状态（管理员）")
     public Result<Boolean> updateUserStatus(@PathVariable Long id, @RequestParam Integer status) {
+        if (status == null || (status != 0 && status != 1)) {
+            throw new BusinessException(400, "非法状态值");
+        }
+        if (userService.getById(id) == null) {
+            throw new BusinessException(404, "用户不存在");
+        }
+
         User user = new User();
         user.setId(id);
         user.setStatus(status);
         boolean success = userService.updateById(user);
         return success ? Result.success("状态修改成功", true) : Result.error("状态修改失败");
     }
-}
 
+    private Long getCurrentUserId(HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        if (userId == null) {
+            throw new BusinessException(401, "请先登录");
+        }
+        return userId;
+    }
+
+    private Integer getCurrentRole(HttpServletRequest request) {
+        Integer role = (Integer) request.getAttribute("role");
+        if (role == null) {
+            throw new BusinessException(401, "请先登录");
+        }
+        return role;
+    }
+}

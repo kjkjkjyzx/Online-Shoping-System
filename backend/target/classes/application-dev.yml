@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    username: root
+    password: 2004
+
+shop:
+  admin-secret: shop-admin-dev
+
+jwt:
+  secret: shop-jwt-dev-secret-2026-local-1234567890

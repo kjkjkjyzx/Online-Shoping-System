@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="user-page">
     <main class="main-content">
       <div class="page-header">
@@ -124,7 +124,7 @@ const handleLogout = async () => {
   try {
     await ElMessageBox.confirm('确定要退出登录吗？', '提示', { confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning' })
     userStore.logout()
-    router.push('/user/login')
+    router.push('/login')
   } catch { }
 }
 

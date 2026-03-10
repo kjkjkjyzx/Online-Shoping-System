@@ -35,7 +35,7 @@
           <el-table :data="order.items || []" border>
             <el-table-column label="商品图片" width="80">
               <template #default="{ row }">
-                <img :src="row.productImage || productPlaceholder" style="width:50px;height:50px;object-fit:cover" />
+                <img :src="resolveImage(row.productImage, productPlaceholder)" style="width:50px;height:50px;object-fit:cover" />
               </template>
             </el-table-column>
             <el-table-column prop="productName" label="商品名称" />
@@ -78,6 +78,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getOrderDetail, cancelOrder, confirmOrder } from '@/api/order'
 import { productPlaceholder } from '@/utils/placeholders'
+import { resolveImage } from '@/utils/image'
 
 const route = useRoute()
 const router = useRouter()
@@ -169,3 +170,4 @@ h1 {
 .loading-box { padding: var(--space-lg); }
 .actions { display: flex; gap: 12px; justify-content: flex-end; }
 </style>
+

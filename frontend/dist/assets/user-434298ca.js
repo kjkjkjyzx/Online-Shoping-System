@@ -1,0 +1,1 @@
+import{H as e}from"./index-56d19677.js";function u(r){return e({url:"/users/login",method:"post",data:r})}function o(r){return e({url:"/users/register",method:"post",data:r})}function n(r){return e({url:`/users/${r}`,method:"get"})}function i(r,t){return e({url:`/users/${r}`,method:"put",data:t})}export{n as g,u as l,o as r,i as u};
