@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Lock, ArrowLeft } from '@element-plus/icons-vue'
@@ -126,6 +126,12 @@ const handleRegister = async () => {
     // 错误消息已由请求拦截器统一提示
   }
 }
+
+// 切换角色时清理 adminSecret 字段及其验证状态
+watch(() => form.role, () => {
+  form.adminSecret = ''
+  formRef.value?.clearValidate('adminSecret')
+})
 </script>
 
 <style scoped>

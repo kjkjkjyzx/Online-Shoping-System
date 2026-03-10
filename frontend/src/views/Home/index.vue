@@ -103,7 +103,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getHotProducts, getProductList } from '@/api/product'
 import { addToCart } from '@/api/cart'
@@ -113,7 +113,7 @@ import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 const userStore = useUserStore()
-const userRole = userStore.role
+const userRole = computed(() => userStore.role)
 
 const hotProducts = ref([])
 const newProducts = ref([])

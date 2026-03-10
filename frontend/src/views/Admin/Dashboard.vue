@@ -215,8 +215,9 @@ const loadStats = async () => {
     // 待处理（展示待发货）
     orderList.value = pendingOrders.slice(0, 5)
 
-    // 今日数据
-    const today = new Date().toISOString().slice(0, 10)
+    // 今日数据（使用本地时区日期）
+    const now = new Date()
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
     const todayOrders = orders.filter(o => o.createTime?.startsWith(today))
     stats.value.todayOrders = todayOrders.length
     stats.value.todaySales = todayOrders

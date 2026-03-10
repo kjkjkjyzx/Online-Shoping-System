@@ -24,6 +24,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="createTime" label="下单时间" width="160" />
+      <el-table-column label="操作" width="120">
+        <template #default="{ row }">
+          <el-button v-if="row.status === 1" size="small" type="primary" @click="handleShip(row.id)">发货</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <!-- 分页 -->

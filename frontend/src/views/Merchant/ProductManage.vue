@@ -133,7 +133,6 @@ const loadProducts = async () => {
     const res = await request.get('/products/mine')
     products.value = res.data || []
     total.value = products.value.length
-    pageNum.value = 1
   } finally {
     loading.value = false
   }

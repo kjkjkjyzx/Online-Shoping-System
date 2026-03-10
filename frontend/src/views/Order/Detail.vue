@@ -101,17 +101,29 @@ const loadOrder = async () => {
 }
 
 const handleCancel = async () => {
-  await ElMessageBox.confirm('确定要取消该订单吗？', '提示', { type: 'warning' })
-  await cancelOrder(order.value.id)
-  ElMessage.success('取消成功')
-  loadOrder()
+  try {
+    await ElMessageBox.confirm('确定要取消该订单吗？', '提示', { type: 'warning' })
+    await cancelOrder(order.value.id)
+    ElMessage.success('取消成功')
+    loadOrder()
+  } catch (error) {
+    if (error !== 'cancel') {
+      ElMessage.error(error.message || '操作失败')
+    }
+  }
 }
 
 const handleConfirm = async () => {
-  await ElMessageBox.confirm('确认已收到商品吗？', '提示', { type: 'warning' })
-  await confirmOrder(order.value.id)
-  ElMessage.success('确认收货成功')
-  loadOrder()
+  try {
+    await ElMessageBox.confirm('确认已收到商品吗？', '提示', { type: 'warning' })
+    await confirmOrder(order.value.id)
+    ElMessage.success('确认收货成功')
+    loadOrder()
+  } catch (error) {
+    if (error !== 'cancel') {
+      ElMessage.error(error.message || '操作失败')
+    }
+  }
 }
 
 onMounted(loadOrder)

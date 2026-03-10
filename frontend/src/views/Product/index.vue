@@ -23,7 +23,7 @@
       </aside>
 
       <!-- 商品列表 -->
-      <section class="product-section">
+      <section class="product-section" v-loading="loading">
         <div class="sort-bar">
           <span class="sort-label">排序：</span>
           <a class="sort-item" :class="{ active: sortType === 'default' }" @click="sortType = 'default'">综合</a>
@@ -85,12 +85,13 @@ const route = useRoute()
 const userStore = useUserStore()
 
 const keyword = ref(route.query.keyword || '')
-const categoryId = ref(null)
+const categoryId = ref(route.query.categoryId ? Number(route.query.categoryId) : null)
 const sortType = ref('default')
 const pageNum = ref(1)
 const pageSize = ref(12)
 const total = ref(0)
 const productList = ref([])
+const loading = ref(false)
 
 const sortedList = computed(() => {
   const list = [...productList.value]
@@ -107,6 +108,13 @@ onMounted(() => {
 
 watch(() => route.query.keyword, (newKeyword) => {
   keyword.value = newKeyword || ''
+  categoryId.value = null
+  pageNum.value = 1
+  loadProducts()
+})
+
+watch(() => route.query.categoryId, (newCategoryId) => {
+  categoryId.value = newCategoryId ? Number(newCategoryId) : null
   pageNum.value = 1
   loadProducts()
 })
@@ -140,6 +148,7 @@ const handleAddToCart = async (product) => {
 }
 
 const loadProducts = async () => {
+  loading.value = true
   try {
     const res = await getProductList({
       pageNum: pageNum.value,
@@ -152,6 +161,8 @@ const loadProducts = async () => {
   } catch {
     productList.value = []
     total.value = 0
+  } finally {
+    loading.value = false
   }
 }
 </script>

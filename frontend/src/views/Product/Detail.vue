@@ -54,7 +54,7 @@ const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
 const product = ref(null)
-const loading = ref(false)
+const loading = ref(true)
 const quantity = ref(1)
 
 onMounted(() => {

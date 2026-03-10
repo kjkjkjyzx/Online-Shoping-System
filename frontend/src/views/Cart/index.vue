@@ -6,8 +6,10 @@
         <h1>我的购物车</h1>
       </div>
 
+      <div v-if="loading" class="empty-wrap" v-loading="true" style="min-height: 300px"></div>
+
       <!-- 空购物车 -->
-      <div v-if="cartList.length === 0" class="empty-wrap">
+      <div v-else-if="cartList.length === 0" class="empty-wrap">
         <el-empty description="购物车空空如也">
           <el-button type="primary" @click="router.push('/product')">去挑选商品</el-button>
         </el-empty>
@@ -72,6 +74,7 @@ const router = useRouter()
 const userStore = useUserStore()
 const selectAll = ref(false)
 const cartList = ref([])
+const loading = ref(false)
 
 const selectedCount = computed(() => {
   return cartList.value.filter(item => item.selected).length
@@ -92,12 +95,15 @@ const loadCart = async () => {
     cartList.value = []
     return
   }
+  loading.value = true
   try {
     const res = await getCartList()
     cartList.value = res.data?.map(item => ({ ...item, selected: item.selected === 1 || item.selected === true })) || []
     updateTotal()
   } catch (error) {
     cartList.value = []
+  } finally {
+    loading.value = false
   }
 }
 
@@ -114,9 +120,9 @@ const updateTotal = () => {
 const handleUpdateQuantity = async (item) => {
   try {
     await updateCartQuantity(item.id, { quantity: item.quantity })
-    loadCart()
   } catch (error) {
-    // 错误消息已由请求拦截器统一提示
+    // 更新失败时重新加载购物车以恢复正确数量
+    loadCart()
   }
 }
 
