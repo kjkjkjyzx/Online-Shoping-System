@@ -97,7 +97,7 @@ CREATE TABLE `order_item` (
   `order_id` BIGINT NOT NULL COMMENT '订单 ID',
   `product_id` BIGINT NOT NULL COMMENT '商品 ID',
   `product_name` VARCHAR(100) NOT NULL COMMENT '商品名称',
-  `product_image` VARCHAR(255) DEFAULT NULL COMMENT '商品图片',
+  `product_image` TEXT DEFAULT NULL COMMENT '商品图片',
   `price` DECIMAL(10,2) NOT NULL COMMENT '商品价格',
   `quantity` INT NOT NULL COMMENT '购买数量',
   `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
