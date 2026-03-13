@@ -76,6 +76,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { ArrowLeft } from '@element-plus/icons-vue'
 import { getOrderDetail, cancelOrder, confirmOrder } from '@/api/order'
 import { productPlaceholder } from '@/utils/placeholders'
 import { resolveImage } from '@/utils/image'
